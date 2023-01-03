@@ -1,0 +1,12 @@
+# server image
+FROM node:14.14.0-alpine
+
+# WORKDIR
+RUN mkdir -p /usr/app/complexWorker
+WORKDIR /usr/app/complexWorker
+
+COPY ./package.json ./
+RUN npm install
+
+COPY ./ ./
+CMD ["npm", "run", "dev"]

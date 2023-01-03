@@ -1,0 +1,50 @@
+version: '3'
+services:
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: secretpassword
+  redis:
+    image: redis
+  nginx:
+    restart: always
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./nginx # location of the dockerfile
+    ports:
+      - 3050:80
+  api:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./server # location of the dockerfile
+    volumes:
+      - /usr/app/complexServer/node_modules
+      - ./server:/usr/app/complexServer
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - PGUSER=postgres
+      - PGHOST=postgres
+      - PGDATABASE=postgres
+      - PGPASSWORD=secretpassword
+      - PGPORT=5432
+  client:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./client # location of the dockerfile
+    volumes:
+      - /usr/app/complexClient/node_modules
+      - ./client:/usr/app/complexClient
+    environment:
+      - WDS_SOCKET_PORT=0
+  worker:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./worker
+    volumes:
+      - /usr/app/complexWorker/node_modules
+      - ./worker:/usr/app/complexWorker
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
