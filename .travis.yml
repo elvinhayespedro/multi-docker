@@ -13,3 +13,10 @@ after_success:
   - docker build -t elvinpedro/multi-nginx ./nginx
   - docker build -t elvinpedro/multi-server ./server
   - docker build -t elvinpedro/multi-worker ./worker
+  # login to Docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # take those images and push them to docker hub
+  - docker push elvinpedro/multi-client
+  - docker push elvinpedro/multi-nginx
+  - docker push elvinpedro/multi-server
+  - docker push elvinpedro/multi-worker
